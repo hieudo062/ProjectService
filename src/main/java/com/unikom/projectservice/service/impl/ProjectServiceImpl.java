@@ -1,18 +1,24 @@
 package com.unikom.projectservice.service.impl;
 
 import com.unikom.projectservice.IProjectService;
+import com.unikom.projectservice.controller.partner.IPartnerController;
+import com.unikom.projectservice.dto.PartnerDTO;
 import com.unikom.projectservice.dto.ProjectDTO;
 import com.unikom.projectservice.dto.request.Search;
 import com.unikom.projectservice.model.Project;
 import com.unikom.projectservice.repository.IProjectRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.social.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.servlet.http.Part;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +26,9 @@ import java.util.Map;
 @Service
 @AllArgsConstructor
 public class ProjectServiceImpl implements IProjectService {
+
+    @Autowired
+    private IPartnerController partnerController;
 
     private IProjectRepository projectRepository;
 
@@ -39,7 +48,9 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Override
     public ProjectDTO findById(Long id) {
-        return projectRepository.findById(id).map(ProjectDTO::new).orElseThrow(() -> new ResourceNotFoundException("Project", "Project does not exist"));
+        ProjectDTO projectDTO = projectRepository.findById(id).map(ProjectDTO::new).orElseThrow(() -> new ResourceNotFoundException("Project", "Project does not exist"));
+        projectDTO.setPartnerDTO(findPartnerById(projectDTO.getPartner()));
+        return projectDTO;
     }
 
     @Override
@@ -49,6 +60,8 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Override
     public List<ProjectDTO> search(Search search, Pageable pageable) {
+
+        List<PartnerDTO> partnerDTOs = partnerController.findAll();
         StringBuilder hql = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
 
@@ -69,8 +82,22 @@ public class ProjectServiceImpl implements IProjectService {
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
+        List<Project> projects = query.getResultList();
+        List<ProjectDTO> projectDTOs = new ArrayList<>();
+        for (Project project: projects) {
+            projectDTOs.add(new ProjectDTO(project));
+        }
+//        List<ProjectDTO> projectDTOsz = query.getResultList().stream().map(ProjectDTO::new);
 
-        return query.getResultList();
+        for (ProjectDTO project : projectDTOs) {
+            for (PartnerDTO partner : partnerDTOs) {
+                if (project.getPartner() == partner.getId()) {
+                    project.setPartnerDTO(partner);
+                }
+            }
+        }
+
+        return projectDTOs;
     }
 
     @Override
@@ -95,4 +122,13 @@ public class ProjectServiceImpl implements IProjectService {
         }
         return (long) query.getSingleResult();
     }
+
+    public PartnerDTO findPartnerById(Long id) {
+        return partnerController.findById(id);
+    }
+
+    public List<PartnerDTO> findAllPartner() {
+        return partnerController.findAll();
+    }
+
 }

@@ -3,6 +3,7 @@ package com.unikom.projectservice.controller.partner;
 import com.unikom.projectservice.dto.PartnerDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -12,21 +13,18 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
-@RequestMapping("/partner")
-public class PartnerController {
-
+@RequestMapping("/partnerRest")
+public class PartnerRestController {
     @Autowired
-    private IPartnerController partnerController;
+    private IPartnerRestController partnerResController;
 
-    @GetMapping("/findById")
-    public PartnerDTO findById(Long id) {
-        return partnerController.findById(id);
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<?> findById(@PathVariable long id) {
+        return partnerResController.findById(id);
     }
 
     @GetMapping("/findAll")
-    public List<PartnerDTO> findAll() {
-        return partnerController.findAll();
+    public ResponseEntity<?> findAll() {
+        return partnerResController.findAll();
     }
-
 }
-

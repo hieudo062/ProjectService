@@ -19,7 +19,7 @@ public class ProjectDTO {
 
     private Long teamSize;
 
-    private String namePartner;
+    private Long partner;
 
     private LocalDate timeStart;
 
@@ -27,7 +27,10 @@ public class ProjectDTO {
 
     private ProjectStatus projectStatus;
 
+    private PartnerDTO partnerDTO;
+
     public ProjectDTO(Project source) {
         BeanUtils.copyProperties(source,this);
     }
+
 }

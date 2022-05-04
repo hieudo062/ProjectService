@@ -18,16 +18,22 @@ public class Project {
         this.id = id;
     }
 
+    @Column(name = "code")
     private String code;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "team_size")
     private Long teamSize;
 
-    private String namePartner;
+    @Column(name = "partner")
+    private Long partner;
 
+    @Column(name = "time_start")
     private LocalDate timeStart;
 
+    @Column(name = "time_finish")
     private LocalDate timeFinish;
 
     @ManyToOne
