@@ -12,21 +12,18 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
-@RequestMapping("/partner")
+@RequestMapping("/partnerRest")
 public class PartnerController {
-
     @Autowired
-    private IPartnerController partnerController;
+    private IPartnerController partnerResController;
 
-    @GetMapping("/findById")
-    public PartnerDTO findById(Long id) {
-        return partnerController.findById(id);
+    @GetMapping("/findById/{id}")
+    public PartnerDTO findById(@PathVariable long id) {
+        return partnerResController.findById(id).getData();
     }
 
     @GetMapping("/findAll")
     public List<PartnerDTO> findAll() {
-        return partnerController.findAll();
+        return partnerResController.findAll().getData();
     }
-
 }
-

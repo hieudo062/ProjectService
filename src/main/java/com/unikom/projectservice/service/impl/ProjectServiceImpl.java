@@ -1,7 +1,7 @@
 package com.unikom.projectservice.service.impl;
 
 import com.unikom.projectservice.IProjectService;
-import com.unikom.projectservice.controller.partner.IPartnerController;
+import com.unikom.projectservice.controller.partner.PartnerController;
 import com.unikom.projectservice.dto.PartnerDTO;
 import com.unikom.projectservice.dto.ProjectDTO;
 import com.unikom.projectservice.dto.request.Search;
@@ -12,23 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.social.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.servlet.http.Part;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class ProjectServiceImpl implements IProjectService {
 
     @Autowired
-    private IPartnerController partnerController;
+    private PartnerController partnerController;
 
     private IProjectRepository projectRepository;
 
@@ -83,19 +79,26 @@ public class ProjectServiceImpl implements IProjectService {
             query.setParameter(key, params.get(key));
         }
         List<Project> projects = query.getResultList();
+
+        Set<Long> partnerIds =  projects.stream().map(Project::getPartnerId).collect(Collectors.toSet());
+
+
         List<ProjectDTO> projectDTOs = new ArrayList<>();
         for (Project project: projects) {
-            projectDTOs.add(new ProjectDTO(project));
+            ProjectDTO projectDTO = new ProjectDTO(project);
+//            projectDTO.setPartnerDTO(new PartnerDTO());
+            projectDTOs.add(projectDTO);
         }
+
 //        List<ProjectDTO> projectDTOsz = query.getResultList().stream().map(ProjectDTO::new);
 
-        for (ProjectDTO project : projectDTOs) {
-            for (PartnerDTO partner : partnerDTOs) {
-                if (project.getPartner() == partner.getId()) {
-                    project.setPartnerDTO(partner);
-                }
-            }
-        }
+//        for (ProjectDTO project : projectDTOs) {
+//            for (PartnerDTO partner : partnerDTOs) {
+//                if (project.getPartner() == partner.getId()) {
+//                    project.setPartnerDTO(partner);
+//                }
+//            }
+//        }
 
         return projectDTOs;
     }

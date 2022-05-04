@@ -28,7 +28,7 @@ public class Project {
     private Long teamSize;
 
     @Column(name = "partner")
-    private Long partner;
+    private Long partnerId;
 
     @Column(name = "time_start")
     private LocalDate timeStart;
