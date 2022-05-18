@@ -27,7 +27,7 @@ public class Project {
     @Column(name = "team_size")
     private Long teamSize;
 
-    @Column(name = "partner")
+    @Column(name = "partner_id")
     private Long partnerId;
 
     @Column(name = "time_start")

@@ -86,19 +86,8 @@ public class ProjectServiceImpl implements IProjectService {
         List<ProjectDTO> projectDTOs = new ArrayList<>();
         for (Project project: projects) {
             ProjectDTO projectDTO = new ProjectDTO(project);
-//            projectDTO.setPartnerDTO(new PartnerDTO());
             projectDTOs.add(projectDTO);
         }
-
-//        List<ProjectDTO> projectDTOsz = query.getResultList().stream().map(ProjectDTO::new);
-
-//        for (ProjectDTO project : projectDTOs) {
-//            for (PartnerDTO partner : partnerDTOs) {
-//                if (project.getPartner() == partner.getId()) {
-//                    project.setPartnerDTO(partner);
-//                }
-//            }
-//        }
 
         return projectDTOs;
     }
@@ -130,8 +119,5 @@ public class ProjectServiceImpl implements IProjectService {
         return partnerController.findById(id);
     }
 
-    public List<PartnerDTO> findAllPartner() {
-        return partnerController.findAll();
-    }
 
 }
